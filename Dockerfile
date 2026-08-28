@@ -1,12 +1,13 @@
 FROM composer:latest AS builder
 
-COPY composer.json ./
+COPY composer.json composer.lock* ./
 
 RUN composer install \
     --no-dev \
     --no-interaction \
     --prefer-dist \
-    --no-scripts
+    --no-scripts \
+    --ignore-platform-reqs
 
 FROM php:8.4-fpm
 
@@ -21,12 +22,13 @@ WORKDIR /app
 COPY --from=builder /app/vendor ./vendor
 COPY . .
 
-# Fix permissions
-RUN mkdir -p bootstrap/cache storage \
+# Create required directories with proper permissions
+RUN mkdir -p bootstrap/cache storage/app storage/framework/cache storage/framework/sessions storage/framework/views storage/logs resources/views \
     && chmod -R 775 bootstrap/cache storage \
-    && chown -R www-data:www-data /app
+    && chown -R www-data:www-data /app \
+    && chmod +x start.sh
 
 EXPOSE 8000
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+CMD ["./start.sh"]
 
