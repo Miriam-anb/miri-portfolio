@@ -22,7 +22,7 @@ COPY --from=builder /app/vendor ./vendor
 COPY . .
 
 # Fix permissions
-RUN mkdir -p bootstrap/cache storage \
+RUN mkdir -p bootstrap/cache storage resources/views \
     && chmod -R 775 bootstrap/cache storage \
     && chown -R www-data:www-data /app
 
