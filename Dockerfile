@@ -8,7 +8,7 @@ RUN composer install \
     --prefer-dist \
     --no-scripts
 
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
     libpq-dev \
